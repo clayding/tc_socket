@@ -5,6 +5,9 @@
 #define SOCK_DATA_SIZE      (DATA_SIZE + 5)
 #define SOCK_PREAMBLE       0x7f7f
 
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+
 typedef enum
 {
     INTERRUPT_SIG,
@@ -24,7 +27,7 @@ typedef struct sock_data
 }sock_data_st;
 
 
-int parse_sock_rx(int sock_fd, char* recv_buf,char* send_buf, int len);
+int parse_sock_rx(int sock_fd, char* buf, int len);
 
 void dump_buf(char* string,char* buf, int len);
 void dump_struct(char* string,sock_data_st *st_data);

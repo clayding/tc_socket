@@ -5,8 +5,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <signal.h>
-#include <bcm2835.h>
-#include <wiringPi.h>
+//#include <bcm2835.h>
+//#include <wiringPi.h>
 
 
 #include "tc_fpga.h"
@@ -17,11 +17,13 @@ static unsigned char spi_init_done = 0;        //0: bcm2835 notinitialized 1: bc
 void spi_end_handle(int param)
 {
   printf("Note: Ctrl+c pressed!\n");
+/*
   if(spi_init_done){
     printf("spi closed\n");  
     bcm2835_spi_end();
     bcm2835_close();
   }
+*/
   server_exit();
   exit(0);
 }
@@ -48,13 +50,13 @@ static void spi_slave1_isr_handle(void)
 	fflush (stdout) ;
 }
 
+/*
 static void gpio_ext_int_init(void)
 {
 	wiringPiSetup () ;
-	/*GPIO 0-7 used for external interrupt handler*/
+	//GPIO 0-7 used for external interrupt handler
 	PI_GPIO_ISR_REGISTER (0, INT_EDGE_RISING, spi_slave1_isr_handle) ;
 }
-
 
 static int spi_init(void)
 {
@@ -87,18 +89,19 @@ static void spi_close(void)
 	bcm2835_spi_end();
 	bcm2835_close();
 }
-
+*/
 int tc_spi_open(void)
 {
 	if(spi_signal_register() !=0){  //response to CTL C signal to release spi if spi_init_done=1 
 		return -1;
 	}
+/*
 	if(spi_init() != 0) { //spi init 
 		printf("spi init failed\n");
 		return -1;
 	}
 	gpio_ext_int_init();//external gpio interrupt init
-
+*/
 	server_init();
 
 	return 0;
@@ -107,7 +110,14 @@ int tc_spi_open(void)
 void tc_spi_close(void)
 {
 	printf("spi close!\n");
-	spi_close();
+	//spi_close();
+}
+
+
+int main(void)
+{
+	tc_spi_open();
+	return 0;
 }
 
 #define DEBUG_DUMP 1
@@ -136,7 +146,7 @@ static void dump_packet(char* buf, int len, char* str, int line)
 static int spi_txonly(char* tx_buf, int tx_buf_len)
 {
 	DUMP_TX_PACKET(tx_buf, tx_buf_len);
-	bcm2835_spi_writenb(tx_buf, tx_buf_len);
+	//bcm2835_spi_writenb(tx_buf, tx_buf_len);
 
 	return 0;
 }
@@ -153,7 +163,7 @@ static int spi_rxonly(char* rx_buf, int rx_buf_len)
 	memset(tx_buf, 0xff, rx_buf_len);
 
 	DUMP_TX_PACKET(tx_buf, rx_buf_len);
-	bcm2835_spi_transfernb(tx_buf, rx_buf, rx_buf_len);
+	//bcm2835_spi_transfernb(tx_buf, rx_buf, rx_buf_len);
 	DUMP_RX_PACKET(rx_buf, rx_buf_len);
 	
 	return rx_buf_len;
@@ -168,7 +178,7 @@ static int spi_txrx(char* tx_buf, int tx_buf_len,
 	}
 	
 	DUMP_TX_PACKET(tx_buf, tx_buf_len);
-	bcm2835_spi_transfernb(tx_buf, rx_buf, tx_buf_len);
+	//bcm2835_spi_transfernb(tx_buf, rx_buf, tx_buf_len);
 	isr_cnt = 0;
 	DUMP_RX_PACKET(rx_buf, rx_buf_len);
 

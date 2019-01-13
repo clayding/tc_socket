@@ -1,3 +1,7 @@
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
 #include "process.h"
 
 int parse_sock_rx(int sock_fd, char* buf, int len)
@@ -10,16 +14,17 @@ int parse_sock_rx(int sock_fd, char* buf, int len)
 
     if(sdata->head == SOCK_PREAMBLE && sdata->flag < DATA_ENUM_MAX)
     {
+        /*
         sdata->crc_res = check_crc16x((unsigned char*)buf,len);
         if (sdata->crc_res) //need to do check_crc16x()
         {
             printf("Crc checked failed\n");
             return 1;
-        }		
+        }*/
         switch(sdata->flag)
         {
             case INTERRUPT_SIG:
-                client_int_handle();
+                //client_int_handle();
                 break;
             case SERVER_RX:
                 /*server write to spi interface*/
